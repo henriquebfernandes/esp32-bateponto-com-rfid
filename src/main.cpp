@@ -1,26 +1,33 @@
-#include <Arduino.h>
+#include <WiFi.h>
+#include <WebServer.h>
+#include <ESPmDNS.h>
 
-// A maioria das placas ESP32 Dev Module tem o LED interno no pino 2
-#define LED_PIN 2
+const char* ssid = "Bate Ponto ESP32";
+const char* password = "12345678";
+
+WebServer server(80);
 
 void setup() {
-  // Inicializa a comunicação serial a 115200 bps
   Serial.begin(115200);
-  
-  // Configura o pino do LED como saída
-  pinMode(LED_PIN, OUTPUT);
-  
-  Serial.println("ESP32 Inicializado com sucesso!");
+
+  // Cria rede Wi-Fi
+  WiFi.softAP(ssid, password);
+
+  Serial.println("Rede criada!");
+
+  // Configura domínio local
+  if (MDNS.begin("bateponto")) {
+    Serial.println("Dominio: http://bateponto.local");
+  }
+
+  // Página inicial
+  server.on("/", []() {
+    server.send(200, "text/html", "<h1>Hello World!</h1>");
+  });
+
+  server.begin();
 }
 
 void loop() {
-  // Liga o LED
-  digitalWrite(LED_PIN, HIGH);
-  Serial.println("LED Ligado");
-  delay(1000); // Aguarda 1 segundo
-
-  // Desliga o LED
-  digitalWrite(LED_PIN, LOW);
-  Serial.println("LED Desligado");
-  delay(1000); // Aguarda 1 segundo
+  server.handleClient();
 }
