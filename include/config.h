@@ -1,0 +1,32 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#define WIFI_SSID "Bate Ponto"
+#define WIFI_PASSWORD "12345678"
+
+#define MDNS_HOSTNAME "bateponto"
+
+// ESP32 DevKit: RC522 via SPI (SS=5, SCK=18, MOSI=23, MISO=19, RST=22).
+#define RFID_SS_PIN 5
+#define RFID_RST_PIN 22
+#define RFID_SCK_PIN 18
+#define RFID_MOSI_PIN 23
+#define RFID_MISO_PIN 19
+#define LED_GREEN_PIN 2
+#define LED_RED_PIN 4
+#define BUZZER_PIN 15
+
+#define ENROLLMENT_TIMEOUT_MS 30000UL
+#define SIGNAL_DURATION_MS 700UL
+#define BUZZER_SUCCESS_HZ 2200
+#define BUZZER_FAILURE_HZ 700
+#define BUZZER_DURATION_MS 180
+#define UI_POLL_INTERVAL_MS 1500
+
+#define PEOPLE_FILE "/people.json"
+#define PEOPLE_TEMP_FILE "/people.tmp"
+#define PEOPLE_BACKUP_FILE "/people.bak"
+#define MAX_PERSON_NAME_LENGTH 64
+#define MAX_PEOPLE 100
+
+#endif

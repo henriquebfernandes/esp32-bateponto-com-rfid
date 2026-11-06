@@ -1,33 +1,38 @@
-#include <WiFi.h>
-#include <WebServer.h>
-#include <ESPmDNS.h>
 
-const char* ssid = "Bate Ponto ESP32";
-const char* password = "12345678";
+#include <Arduino.h>
 
-WebServer server(80);
+#include "wifi/WifiManager.h"
+#include "webserver/WebServerManager.h"
+#include "filesystem/FileSystemManager.h"
+#include "rfid/RFIDManager.h"
+#include "database/DatabaseManager.h"
+#include "hardware/HardwareManager.h"
 
 void setup() {
-  Serial.begin(115200);
 
-  // Cria rede Wi-Fi
-  WiFi.softAP(ssid, password);
+    Serial.begin(115200);
 
-  Serial.println("Rede criada!");
+    // Inicializa sistema de arquivos
+    if (!initFileSystem()) {
+        Serial.println("Falha no sistema de arquivos!");
+        return;
+    }
+    if (!initDatabase()) { Serial.println("Falha ao carregar banco de dados."); return; }
+    initHardware();
+    if (!initRFID()) { Serial.println("Falha ao inicializar RC522."); return; }
 
-  // Configura domínio local
-  if (MDNS.begin("bateponto")) {
-    Serial.println("Dominio: http://bateponto.local");
-  }
+    // Inicializa Wi-Fi
+    if (!initWiFi()) { Serial.println("Falha ao iniciar Wi-Fi AP."); return; }
 
-  // Página inicial
-  server.on("/", []() {
-    server.send(200, "text/html", "<h1>Hello World!</h1>");
-  });
+    // Inicializa servidor web
+    initWebServer();
 
-  server.begin();
 }
 
 void loop() {
-  server.handleClient();
+
+    handleWebServer();
+    processRFID();
+    updateHardware();
+
 }
