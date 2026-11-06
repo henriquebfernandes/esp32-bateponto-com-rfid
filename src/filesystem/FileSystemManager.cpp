@@ -15,3 +15,8 @@ bool initFileSystem() {
 
     return true;
 }
+
+File openFile(const char* path, const char* mode) { return LittleFS.open(path, mode); }
+bool fileExists(const char* path) { return LittleFS.exists(path); }
+bool renameFile(const char* from, const char* to) { return LittleFS.rename(from, to); }
+bool removeFile(const char* path) { return LittleFS.remove(path); }
